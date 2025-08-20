@@ -3,8 +3,6 @@ name: Build APK
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build:
@@ -22,10 +20,22 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y python3-pip python3-setuptools git zip unzip openjdk-17-jdk
+          sudo apt install -y python3-pip python3-setuptools git zip unzip openjdk-17-jdk wget
           pip install buildozer cython
 
+      - name: Install Android SDK & Build-tools
+        run: |
+          sudo mkdir -p /usr/lib/android-sdk
+          cd /usr/lib/android-sdk
+          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdtools.zip
+          unzip cmdtools.zip -d cmdline-tools
+          yes | cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=/usr/lib/android-sdk --licenses
+          yes | cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=/usr/lib/android-sdk "platform-tools" "platforms;android-31" "build-tools;31.0.0" "ndk;23.1.7779620"
+
       - name: Build APK
+        env:
+          ANDROIDSDK: /usr/lib/android-sdk
+          ANDROIDNDK: /usr/lib/android-sdk/ndk/23.1.7779620
         run: |
           buildozer android debug
 
