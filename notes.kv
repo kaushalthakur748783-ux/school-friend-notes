@@ -1,0 +1,40 @@
+BoxLayout:
+    orientation: 'vertical'
+    padding: 12
+    spacing: 10
+
+    TextInput:
+        id: search_input
+        hint_text: "🔍 Search notes..."
+        size_hint_y: None
+        height: "40dp"
+        multiline: False
+        on_text: app.search_notes()
+
+    TextInput:
+        id: note_input
+        hint_text: "✍️ Write your note here..."
+        size_hint_y: 0.2
+
+    BoxLayout:
+        size_hint_y: None
+        height: "50dp"
+        spacing: 10
+        Button:
+            text: "💾 Save"
+            background_color: (0.2, 0.6, 1, 1)
+            on_release: app.save_note()
+        Button:
+            text: "📷 Camera"
+            background_color: (0.1, 0.7, 0.2, 1)
+            on_release: app.open_camera()
+
+    ScrollView:
+        GridLayout:
+            id: notes_list
+            cols: 1
+            size_hint_y: None
+            height: self.minimum_height
+            row_default_height: "70dp"
+            row_force_default: False
+            spacing: 6
